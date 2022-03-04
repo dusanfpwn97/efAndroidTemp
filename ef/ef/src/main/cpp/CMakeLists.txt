@@ -32,13 +32,13 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
 add_definitions("-DIMGUI_IMPL_OPENGL_ES2")
 
 # source files common to both the GameActivity and NativeActivity versions
-set(COMMON_SRC_DIR "../../../../../common")
+set(COMMON_SRC_DIR "../../common")
 
 # common include directory for all samples
-set(COMMON_INCLUDE_DIR "../../../../../../common/include")
+set(COMMON_INCLUDE_DIR "../../common/include")
 
 # build Dear ImGui as a static lib
-set(IMGUI_BASE_DIR "../../../../../../third_party/imgui")
+set(IMGUI_BASE_DIR "../../../../third_party/imgui")
 
 add_library(imgui STATIC
         ${IMGUI_BASE_DIR}/imgui_demo.cpp
