@@ -15,7 +15,6 @@
  */
 #include "common.hpp"
 #include "demo_scene.hpp"
-#include "imgui_manager.hpp"
 #include "input_util.hpp"
 #include "scene_manager.hpp"
 #include "native_engine.hpp"
@@ -63,7 +62,6 @@ NativeEngine::NativeEngine(struct android_app *app) {
     mActiveAxisIds = 0;
     mJniEnv = NULL;
     TextureAssetLoader::setAssetManager(app->activity->assetManager);
-    mImGuiManager = NULL;
     memset(&mState, 0, sizeof(mState));
     mIsFirstFrame = true;
 
@@ -95,9 +93,6 @@ NativeEngine::~NativeEngine() {
     Paddleboat_destroy(mJniEnv);
     ControllerUIData::UnloadControllerUIData();
     KillContext();
-    if (mImGuiManager != NULL) {
-        delete mImGuiManager;
-    }
     if (mJniEnv) {
         ALOGI("Detaching current thread from JNI.");
         mApp->activity->vm->DetachCurrentThread();
@@ -356,6 +351,8 @@ void NativeEngine::UpdateSystemBarOffset() {
 }
 
 bool NativeEngine::HandleInput(AInputEvent *event) {
+
+
     return false;
 }
 
@@ -418,6 +415,8 @@ bool NativeEngine::InitDisplay() {
         ALOGE("NativeEngine: failed to init display, error %d", eglGetError());
         return false;
     }
+
+    ALOGI("NativeEngine: display initialized successfully.");
     return true;
 }
 
@@ -494,9 +493,16 @@ void NativeEngine::ConfigureOpenGL() {
 
 
 bool NativeEngine::PrepareToRender() {
+
+
+
     if (mEglDisplay == EGL_NO_DISPLAY || mEglSurface == EGL_NO_SURFACE ||
         mEglContext == EGL_NO_CONTEXT) {
 
+        //if(efWindow) delete efWindow;
+        //efWindow = new ef::efWindow();
+
+        //efWindow->createWindow(0,0);
         // create display if needed
         if (!InitDisplay()) {
             ALOGE("NativeEngine: failed to create display.");
@@ -530,9 +536,6 @@ bool NativeEngine::PrepareToRender() {
         // configure our global OpenGL settings
         ConfigureOpenGL();
 
-        if (mImGuiManager == NULL) {
-            mImGuiManager = new ImGuiManager();
-        }
     }
     if (!mHasGLObjects) {
         ALOGI("NativeEngine: creating OpenGL objects.");
@@ -541,9 +544,6 @@ bool NativeEngine::PrepareToRender() {
             return false;
         }
     }
-
-    // Keep the ImGui display size up to date
-    mImGuiManager->SetDisplaySize(mSurfWidth, mSurfHeight, mScreenDensity);
 
     // ready to render
     return true;
@@ -624,28 +624,9 @@ bool NativeEngine::HandleEglError(EGLint error) {
 }
 
 static void _log_opengl_error(GLenum err) {
-    switch (err) {
-        case GL_NO_ERROR:
-            ALOGE("*** OpenGL error: GL_NO_ERROR");
-            break;
-        case GL_INVALID_ENUM:
-            ALOGE("*** OpenGL error: GL_INVALID_ENUM");
-            break;
-        case GL_INVALID_VALUE:
-            ALOGE("*** OpenGL error: GL_INVALID_VALUE");
-            break;
-        case GL_INVALID_OPERATION:
-            ALOGE("*** OpenGL error: GL_INVALID_OPERATION");
-            break;
-        case GL_INVALID_FRAMEBUFFER_OPERATION:
-            ALOGE("*** OpenGL error: GL_INVALID_FRAMEBUFFER_OPERATION");
-            break;
-        case GL_OUT_OF_MEMORY:
-            ALOGE("*** OpenGL error: GL_OUT_OF_MEMORY");
-            break;
-        default:
-            ALOGE("*** OpenGL error: error %d", err);
-            break;
+    while((err = glGetError()) != GL_NO_ERROR)
+    {
+        ALOGE("*** OpenGL error: error %d", err)
     }
 }
 
@@ -684,10 +665,6 @@ void NativeEngine::DoFrame() {
 
     // render!
     mgr->DoFrame();
-
-    if (mImGuiManager != NULL) {
-        mImGuiManager->EndImGuiFrame();
-    }
 
     // swap buffers
     if (EGL_FALSE == eglSwapBuffers(mEglDisplay, mEglSurface)) {

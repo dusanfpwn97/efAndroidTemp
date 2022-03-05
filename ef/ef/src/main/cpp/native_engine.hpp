@@ -16,9 +16,19 @@
 
 #pragma once
 
-#include "common.hpp"
+#include <common.hpp>
+#include <EGL/egl.h>
+#include <GLES3/gl3.h>
+#include <jni.h>
+#include <errno.h>
+#include <android/sensor.h>
+#include <android/log.h>
+#include "game-activity/native_app_glue/android_native_app_glue.h"
+#include <cstring>
+#include <unistd.h>
+#include <stdlib.h>
 
-class ImGuiManager;
+#include "efWindowAndroid.hpp"
 
 struct NativeEngineSavedState {
     bool mHasFocus;
@@ -39,9 +49,6 @@ public:
 
     // returns the Android app object
     android_app *GetAndroidApp();
-
-    // returns the imgui manager instance
-    ImGuiManager *GetImGuiManager() { return mImGuiManager; }
 
     // returns the (singleton) instance
     static NativeEngine *GetInstance();
@@ -64,6 +71,7 @@ private:
 
     // Screen density
     int mScreenDensity;
+
 
     // EGL stuff
     EGLDisplay mEglDisplay;
@@ -91,9 +99,6 @@ private:
 
     // JNI env for the app native glue thread
     JNIEnv *mAppJniEnv;
-
-    // ImGui manager instance
-    ImGuiManager *mImGuiManager;
 
     // is this the first frame we're drawing?
     bool mIsFirstFrame;

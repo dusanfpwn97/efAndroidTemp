@@ -67,7 +67,9 @@ add_library(game SHARED
         ${COMMON_SRC_DIR}/scene.cpp
         ${COMMON_SRC_DIR}/scene_manager.cpp
         ${COMMON_SRC_DIR}/texture_asset_loader.cpp
-        ${COMMON_SRC_DIR}/util.cpp)
+        ${COMMON_SRC_DIR}/util.cpp
+        ${COMMON_SRC_DIR}/efWindow.cpp
+        efWindowAndroid.cpp)
 
 target_include_directories(game PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}

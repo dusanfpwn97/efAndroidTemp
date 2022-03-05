@@ -1,0 +1,3 @@
+[submodule "ef/third_party/SDL"]
+	path = ef/third_party/SDL
+	url = https://github.com/dusanfpwn97/SDL.git
