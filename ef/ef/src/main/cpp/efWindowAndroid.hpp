@@ -32,12 +32,13 @@ namespace ef
         bool InitSurface() override;
         bool InitContext() override;
 
-    private:
+
         // EGL stuff
         EGLDisplay mEglDisplay;
         EGLSurface mEglSurface;
         EGLContext mEglContext;
         EGLConfig mEglConfig;
+
 
         // android_app structure
         struct android_app *mApp;

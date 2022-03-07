@@ -17,17 +17,6 @@
 #pragma once
 
 #include <common.hpp>
-#include <EGL/egl.h>
-#include <GLES3/gl3.h>
-#include <jni.h>
-#include <errno.h>
-#include <android/sensor.h>
-#include <android/log.h>
-#include "game-activity/native_app_glue/android_native_app_glue.h"
-#include <cstring>
-#include <unistd.h>
-#include <stdlib.h>
-
 #include "efWindowAndroid.hpp"
 
 struct NativeEngineSavedState {
