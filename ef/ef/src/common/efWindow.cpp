@@ -12,7 +12,8 @@ namespace ef {
     }
 
     bool efWindow::createWindow(int w, int h) {
-        return 0;
+
+        return false;
     }
 
     void efWindow::configureOpenGL() {

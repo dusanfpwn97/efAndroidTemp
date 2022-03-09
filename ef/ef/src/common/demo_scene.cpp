@@ -111,7 +111,7 @@ void DemoScene::DoFrame() {
     Paddleboat_update(NativeEngine::GetInstance()->GetJniEnv());
 
     // clear screen
-    glClearColor(0.0f, 0.0f, 0.25f, 1.0f);
+    glClearColor(0.1f, 0.25f, 0.25f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_DEPTH_TEST);
 

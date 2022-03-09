@@ -50,12 +50,12 @@ static NativeEngineSavedState appState = {false};
 NativeEngine::NativeEngine(struct android_app *app) {
     ALOGI("NativeEngine: initializing.");
     mApp = app;
+
+    window = new ef::AndroidWindow();
+
     mHasFocus = mIsVisible = mHasWindow = false;
-    mHasGLObjects = false;
-    mEglDisplay = EGL_NO_DISPLAY;
-    mEglSurface = EGL_NO_SURFACE;
-    mEglContext = EGL_NO_CONTEXT;
-    mEglConfig = 0;
+
+
     mSurfWidth = mSurfHeight = 0;
     mApiVersion = 0;
     mScreenDensity = AConfiguration_getDensity(app->config);
@@ -78,6 +78,8 @@ NativeEngine::NativeEngine(struct android_app *app) {
 
     Paddleboat_init(GetJniEnv(), app->activity->javaGameActivity); //clazz);
 
+    window->init(mApp);
+
     VLOGD("NativeEngine: querying API level.");
     ALOGI("NativeEngine: API version %d.", mApiVersion);
     ALOGI("NativeEngine: Density %d", mScreenDensity);
@@ -92,7 +94,7 @@ NativeEngine::~NativeEngine() {
     VLOGD("NativeEngine: destructor running");
     Paddleboat_destroy(mJniEnv);
     ControllerUIData::UnloadControllerUIData();
-    KillContext();
+
     if (mJniEnv) {
         ALOGI("Detaching current thread from JNI.");
         mApp->activity->vm->DetachCurrentThread();
@@ -280,7 +282,7 @@ void NativeEngine::HandleCommand(int32_t cmd) {
         case APP_CMD_TERM_WINDOW:
             // The window is going away -- kill the surface
             VLOGD("NativeEngine: APP_CMD_TERM_WINDOW");
-            KillSurface();
+            window->KillSurface();
             mHasWindow = false;
             break;
         case APP_CMD_GAINED_FOCUS:
@@ -326,7 +328,7 @@ void NativeEngine::HandleCommand(int32_t cmd) {
             // cooperate by deallocating all of our graphic resources.
             if (!mHasWindow) {
                 VLOGD("NativeEngine: trimming memory footprint (deleting GL objects).");
-                KillGLObjects();
+                window->KillGLObjects();
             }
             break;
         case APP_CMD_WINDOW_INSETS_CHANGED:
@@ -339,8 +341,7 @@ void NativeEngine::HandleCommand(int32_t cmd) {
     }
 
     VLOGD("NativeEngine: STATUS: F%d, V%d, W%d, EGL: D %p, S %p, CTX %p, CFG %p",
-          mHasFocus, mIsVisible, mHasWindow, mEglDisplay, mEglSurface, mEglContext,
-          mEglConfig);
+          mHasFocus, mIsVisible, mHasWindow, window->mEglDisplay, window->mEglSurface, window->mEglContext, window->mEglConfig);
 }
 
 void NativeEngine::UpdateSystemBarOffset() {
@@ -402,91 +403,9 @@ void NativeEngine::CheckForNewAxis() {
     }
 }
 
-bool NativeEngine::InitDisplay() {
-    if (mEglDisplay != EGL_NO_DISPLAY) {
-        // nothing to do
-        ALOGI("NativeEngine: no need to init display (already had one).");
-        return true;
-    }
-
-    ALOGI("NativeEngine: initializing display.");
-    mEglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    if (EGL_FALSE == eglInitialize(mEglDisplay, 0, 0)) {
-        ALOGE("NativeEngine: failed to init display, error %d", eglGetError());
-        return false;
-    }
-
-    ALOGI("NativeEngine: display initialized successfully.");
-    return true;
-}
-
-bool NativeEngine::InitSurface() {
-    // need a display
-    MY_ASSERT(mEglDisplay != EGL_NO_DISPLAY);
-
-    if (mEglSurface != EGL_NO_SURFACE) {
-        // nothing to do
-        ALOGI("NativeEngine: no need to init surface (already had one).");
-        return true;
-    }
-
-    ALOGI("NativeEngine: initializing surface.");
-
-    EGLint numConfigs;
-
-    const EGLint attribs[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, // request OpenGL ES 2.0
-            EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-            EGL_DEPTH_SIZE, 16,
-            EGL_NONE
-    };
-
-    // since this is a simple sample, we have a trivial selection process. We pick
-    // the first EGLConfig that matches:
-    eglChooseConfig(mEglDisplay, attribs, &mEglConfig, 1, &numConfigs);
-
-    // create EGL surface
-    mEglSurface = eglCreateWindowSurface(mEglDisplay, mEglConfig, mApp->window, NULL);
-    if (mEglSurface == EGL_NO_SURFACE) {
-        ALOGE("Failed to create EGL surface, EGL error %d", eglGetError());
-        return false;
-    }
-
-    ALOGI("NativeEngine: successfully initialized surface.");
-    return true;
-}
-
-bool NativeEngine::InitContext() {
-    // need a display
-    MY_ASSERT(mEglDisplay != EGL_NO_DISPLAY);
-
-    EGLint attribList[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE}; // OpenGL ES 2.0
-
-    if (mEglContext != EGL_NO_CONTEXT) {
-        // nothing to do
-        ALOGI("NativeEngine: no need to init context (already had one).");
-        return true;
-    }
-
-    ALOGI("NativeEngine: initializing context.");
-
-    // create EGL context
-    mEglContext = eglCreateContext(mEglDisplay, mEglConfig, NULL, attribList);
-    if (mEglContext == EGL_NO_CONTEXT) {
-        ALOGE("Failed to create EGL context, EGL error %d", eglGetError());
-        return false;
-    }
-
-    ALOGI("NativeEngine: successfully initialized context.");
-
-    return true;
-}
 
 void NativeEngine::ConfigureOpenGL() {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 }
@@ -494,41 +413,16 @@ void NativeEngine::ConfigureOpenGL() {
 
 bool NativeEngine::PrepareToRender() {
 
+    bool isWindowCreated;
 
+    if (window->mEglDisplay == EGL_NO_DISPLAY || window->mEglSurface == EGL_NO_SURFACE || window->mEglContext == EGL_NO_CONTEXT)
+    {
 
-    if (mEglDisplay == EGL_NO_DISPLAY || mEglSurface == EGL_NO_SURFACE ||
-        mEglContext == EGL_NO_CONTEXT) {
-
-        //if(efWindow) delete efWindow;
-        //efWindow = new ef::efWindow();
+        isWindowCreated = window->createWindow(0,0);
 
         //efWindow->createWindow(0,0);
         // create display if needed
-        if (!InitDisplay()) {
-            ALOGE("NativeEngine: failed to create display.");
-            return false;
-        }
 
-        // create surface if needed
-        if (!InitSurface()) {
-            ALOGE("NativeEngine: failed to create surface.");
-            return false;
-        }
-
-        // create context if needed
-        if (!InitContext()) {
-            ALOGE("NativeEngine: failed to create context.");
-            return false;
-        }
-
-        ALOGI("NativeEngine: binding surface and context (display %p, surface %p, context %p)",
-              mEglDisplay, mEglSurface, mEglContext);
-
-        // bind them
-        if (EGL_FALSE == eglMakeCurrent(mEglDisplay, mEglSurface, mEglSurface, mEglContext)) {
-            ALOGE("NativeEngine: eglMakeCurrent failed, EGL error %d", eglGetError());
-            HandleEglError(eglGetError());
-        }
 
         // Make sure UI data is loaded
         ControllerUIData::LoadControllerUIData();
@@ -536,100 +430,12 @@ bool NativeEngine::PrepareToRender() {
         // configure our global OpenGL settings
         ConfigureOpenGL();
 
-    }
-    if (!mHasGLObjects) {
-        ALOGI("NativeEngine: creating OpenGL objects.");
-        if (!InitGLObjects()) {
-            ALOGE("NativeEngine: unable to initialize OpenGL objects.");
-            return false;
-        }
+        return isWindowCreated;
     }
 
     // ready to render
-    return true;
+    return false;
 }
-
-void NativeEngine::KillGLObjects() {
-    if (mHasGLObjects) {
-        SceneManager *mgr = SceneManager::GetInstance();
-        mgr->KillGraphics();
-        mHasGLObjects = false;
-    }
-}
-
-void NativeEngine::KillSurface() {
-    ALOGI("NativeEngine: killing surface.");
-    eglMakeCurrent(mEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-    if (mEglSurface != EGL_NO_SURFACE) {
-        eglDestroySurface(mEglDisplay, mEglSurface);
-        mEglSurface = EGL_NO_SURFACE;
-    }
-    ALOGI("NativeEngine: Surface killed successfully.");
-}
-
-void NativeEngine::KillContext() {
-    ALOGI("NativeEngine: killing context.");
-
-    // since the context is going away, we have to kill the GL objects
-    KillGLObjects();
-
-    eglMakeCurrent(mEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-
-    if (mEglContext != EGL_NO_CONTEXT) {
-        eglDestroyContext(mEglDisplay, mEglContext);
-        mEglContext = EGL_NO_CONTEXT;
-    }
-    ALOGI("NativeEngine: Context killed successfully.");
-}
-
-void NativeEngine::KillDisplay() {
-    // causes context and surface to go away too, if they are there
-    ALOGI("NativeEngine: killing display.");
-    KillContext();
-    KillSurface();
-
-    if (mEglDisplay != EGL_NO_DISPLAY) {
-        ALOGI("NativeEngine: terminating display now.");
-        eglTerminate(mEglDisplay);
-        mEglDisplay = EGL_NO_DISPLAY;
-    }
-    ALOGI("NativeEngine: display killed successfully.");
-}
-
-bool NativeEngine::HandleEglError(EGLint error) {
-    switch (error) {
-        case EGL_SUCCESS:
-            // nothing to do
-            return true;
-        case EGL_CONTEXT_LOST:
-            ALOGW("NativeEngine: egl error: EGL_CONTEXT_LOST. Recreating context.");
-            KillContext();
-            return true;
-        case EGL_BAD_CONTEXT:
-            ALOGW("NativeEngine: egl error: EGL_BAD_CONTEXT. Recreating context.");
-            KillContext();
-            return true;
-        case EGL_BAD_DISPLAY:
-            ALOGW("NativeEngine: egl error: EGL_BAD_DISPLAY. Recreating display.");
-            KillDisplay();
-            return true;
-        case EGL_BAD_SURFACE:
-            ALOGW("NativeEngine: egl error: EGL_BAD_SURFACE. Recreating display.");
-            KillSurface();
-            return true;
-        default:
-            ALOGW("NativeEngine: unknown egl error: %d", error);
-            return false;
-    }
-}
-
-static void _log_opengl_error(GLenum err) {
-    while((err = glGetError()) != GL_NO_ERROR)
-    {
-        ALOGE("*** OpenGL error: error %d", err)
-    }
-}
-
 
 void NativeEngine::DoFrame() {
     // prepare to render (create context, surfaces, etc, if needed)
@@ -644,8 +450,8 @@ void NativeEngine::DoFrame() {
     // how big is the surface? We query every frame because it's cheap, and some
     // strange devices out there change the surface size without calling any callbacks...
     int width, height;
-    eglQuerySurface(mEglDisplay, mEglSurface, EGL_WIDTH, &width);
-    eglQuerySurface(mEglDisplay, mEglSurface, EGL_HEIGHT, &height);
+    eglQuerySurface(window->mEglDisplay, window->mEglSurface, EGL_WIDTH, &width);
+    eglQuerySurface(window->mEglDisplay, window->mEglSurface, EGL_HEIGHT, &height);
 
     if (width != mSurfWidth || height != mSurfHeight) {
         // notify scene manager that the surface has changed size
@@ -667,10 +473,10 @@ void NativeEngine::DoFrame() {
     mgr->DoFrame();
 
     // swap buffers
-    if (EGL_FALSE == eglSwapBuffers(mEglDisplay, mEglSurface)) {
+    if (EGL_FALSE == eglSwapBuffers(window->mEglDisplay, window->mEglSurface)) {
         // failed to swap buffers...
         ALOGW("NativeEngine: eglSwapBuffers failed, EGL error %d", eglGetError());
-        HandleEglError(eglGetError());
+        window->HandleEglError(eglGetError());
     }
 
     // print out GL errors, if any
@@ -678,7 +484,7 @@ void NativeEngine::DoFrame() {
     static int errorsPrinted = 0;
     while ((e = glGetError()) != GL_NO_ERROR) {
         if (errorsPrinted < MAX_GL_ERRORS) {
-            _log_opengl_error(e);
+            window->log_opengl_error(e);
             ++errorsPrinted;
             if (errorsPrinted >= MAX_GL_ERRORS) {
                 ALOGE("*** NativeEngine: TOO MANY OPENGL ERRORS. NO LONGER PRINTING.");
@@ -691,12 +497,3 @@ android_app *NativeEngine::GetAndroidApp() {
     return mApp;
 }
 
-bool NativeEngine::InitGLObjects() {
-    if (!mHasGLObjects) {
-        SceneManager *mgr = SceneManager::GetInstance();
-        mgr->StartGraphics();
-        _log_opengl_error(glGetError());
-        mHasGLObjects = true;
-    }
-    return true;
-}

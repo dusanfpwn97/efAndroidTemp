@@ -4,17 +4,23 @@
 
 #include "efWindowAndroid.hpp"
 #include <android/window.h>
+#include "scene_manager.hpp"
 
 namespace ef
 {
 
-
     AndroidWindow::AndroidWindow() {
+        mEglDisplay = EGL_NO_DISPLAY;
+        mEglSurface = EGL_NO_SURFACE;
+        mEglContext = EGL_NO_CONTEXT;
+        mEglConfig = 0;
+
+        mHasGLObjects = false;
 
     }
 
     AndroidWindow::~AndroidWindow() {
-
+        KillContext();
     }
 
     bool AndroidWindow::InitDisplay() {
@@ -39,7 +45,7 @@ namespace ef
         if (mEglSurface != EGL_NO_SURFACE) {
             // nothing to do
             //ALOGI("NativeEngine: no need to init surface (already had one).");
-            return true;
+           // return true;
         }
 
 
@@ -79,7 +85,7 @@ namespace ef
         if (mEglContext != EGL_NO_CONTEXT) {
             // nothing to do
           //  ALOGI("NativeEngine: no need to init context (already had one).");
-            return true;
+           // return true;
         }
 
       //  ALOGI("NativeEngine: initializing context.");
@@ -95,5 +101,144 @@ namespace ef
 
         return true;
     }
+
+    bool AndroidWindow::createWindow(int w, int h) {
+        if (!InitDisplay()) {
+            // ALOGE("NativeEngine: failed to create display.");
+            return false;
+        }
+
+        // create surface if needed
+        if (!InitSurface()) {
+            // ALOGE("NativeEngine: failed to create surface.");
+            return false;
+        }
+
+        // create context if needed
+        if (!InitContext()) {
+            // ALOGE("NativeEngine: failed to create context.");
+            return false;
+        }
+
+
+        // bind
+        if (EGL_FALSE == eglMakeCurrent(mEglDisplay, mEglSurface, mEglSurface, mEglContext)) {
+            //ALOGE("NativeEngine: eglMakeCurrent failed, EGL error %d", eglGetError());
+            HandleEglError(eglGetError());
+        }
+
+        //ALOGI("NativeEngine: binding surface and context (display %p, surface %p, context %p)",
+        //  mEglDisplay, mEglSurface, mEglContext);
+
+        if (!mHasGLObjects) {
+           // ALOGI("NativeEngine: creating OpenGL objects.");
+            if (!InitGLObjects()) {
+               // ALOGE("NativeEngine: unable to initialize OpenGL objects.");
+                return false;
+            }
+        }
+
+
+        return true;
+    }
+
+    void AndroidWindow::init(android_app *app) {
+        mApp = app;
+
+    }
+
+    bool AndroidWindow::HandleEglError(EGLint error) {
+        switch (error) {
+            case EGL_SUCCESS:
+                // nothing to do
+                return true;
+            case EGL_CONTEXT_LOST:
+                //ALOGW("NativeEngine: egl error: EGL_CONTEXT_LOST. Recreating context.");
+                KillContext();
+                return true;
+            case EGL_BAD_CONTEXT:
+                //ALOGW("NativeEngine: egl error: EGL_BAD_CONTEXT. Recreating context.");
+                KillContext();
+                return true;
+            case EGL_BAD_DISPLAY:
+               // ALOGW("NativeEngine: egl error: EGL_BAD_DISPLAY. Recreating display.");
+                KillDisplay();
+                return true;
+            case EGL_BAD_SURFACE:
+                //ALOGW("NativeEngine: egl error: EGL_BAD_SURFACE. Recreating display.");
+                KillSurface();
+                return true;
+            default:
+                //ALOGW("NativeEngine: unknown egl error: %d", error);
+                return false;
+        }
+    }
+
+
+    void AndroidWindow::KillGLObjects() {
+        if (mHasGLObjects) {
+            SceneManager *mgr = SceneManager::GetInstance();
+            mgr->KillGraphics();
+            mHasGLObjects = false;
+        }
+    }
+
+    void AndroidWindow::KillSurface() {
+        //ALOGI("NativeEngine: killing surface.");
+        eglMakeCurrent(mEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        if (mEglSurface != EGL_NO_SURFACE) {
+            eglDestroySurface(mEglDisplay, mEglSurface);
+            mEglSurface = EGL_NO_SURFACE;
+        }
+        //ALOGI("NativeEngine: Surface killed successfully.");
+    }
+
+    void AndroidWindow::KillContext() {
+        //ALOGI("NativeEngine: killing context.");
+
+        // since the context is going away, we have to kill the GL objects
+        KillGLObjects();
+
+        eglMakeCurrent(mEglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+
+        if (mEglContext != EGL_NO_CONTEXT) {
+            eglDestroyContext(mEglDisplay, mEglContext);
+            mEglContext = EGL_NO_CONTEXT;
+        }
+        //ALOGI("NativeEngine: Context killed successfully.");
+    }
+
+    void AndroidWindow::KillDisplay() {
+        // causes context and surface to go away too, if they are there
+        //ALOGI("NativeEngine: killing display.");
+        KillContext();
+        KillSurface();
+
+        if (mEglDisplay != EGL_NO_DISPLAY) {
+            //ALOGI("NativeEngine: terminating display now.");
+            eglTerminate(mEglDisplay);
+            mEglDisplay = EGL_NO_DISPLAY;
+        }
+        //ALOGI("NativeEngine: display killed successfully.");
+    }
+
+
+    bool AndroidWindow::InitGLObjects() {
+        if (!mHasGLObjects) {
+            SceneManager *mgr = SceneManager::GetInstance();
+            mgr->StartGraphics();
+            log_opengl_error(glGetError());
+            mHasGLObjects = true;
+        }
+        return true;
+    }
+
+    void AndroidWindow::log_opengl_error(GLenum err) {
+        while((err = glGetError()) != GL_NO_ERROR)
+        {
+            //ALOGE("*** OpenGL error: error %d", err)
+        }
+    }
+    
 
 }

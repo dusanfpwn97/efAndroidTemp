@@ -49,24 +49,17 @@ public:
     int GetSystemBarOffset() { return mSystemBarOffset; }
 
 private:
+    ef::AndroidWindow* window;
+
     // variables to track Android lifecycle:
     bool mHasFocus, mIsVisible, mHasWindow;
 
-    // are our OpenGL objects (textures, etc) currently loaded?
-    bool mHasGLObjects;
 
     // android API version (0 if not yet queried)
     int mApiVersion;
 
     // Screen density
     int mScreenDensity;
-
-
-    // EGL stuff
-    EGLDisplay mEglDisplay;
-    EGLSurface mEglSurface;
-    EGLContext mEglContext;
-    EGLConfig mEglConfig;
 
     // known surface size
     int mSurfWidth, mSurfHeight;
@@ -92,27 +85,9 @@ private:
     // is this the first frame we're drawing?
     bool mIsFirstFrame;
 
-    // initialize the display
-    bool InitDisplay();
 
-    // initialize surface. Requires display to have been initialized first.
-    bool InitSurface();
-
-    // initialize context. Requires display to have been initialized first.
-    bool InitContext();
-
-    // kill context
-    void KillContext();
-
-    void KillSurface();
-
-    void KillDisplay(); // also causes context and surface to get killed
-
-    bool HandleEglError(EGLint error);
 
     bool InitGLObjects();
-
-    void KillGLObjects();
 
     void ConfigureOpenGL();
 
@@ -127,6 +102,8 @@ private:
     void CheckForNewAxis();
 
     void UpdateSystemBarOffset();
+
+
 public:
     // these are public for simplicity because we have internal static callbacks
     void HandleCommand(int32_t cmd);

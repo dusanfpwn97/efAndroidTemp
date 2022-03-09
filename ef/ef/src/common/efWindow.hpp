@@ -8,7 +8,7 @@ namespace ef
         efWindow();
         virtual ~efWindow();
 
-        bool createWindow(int w, int h);
+        virtual bool createWindow(int w, int h);
         void configureOpenGL();
 
         bool PrepareToRender();
