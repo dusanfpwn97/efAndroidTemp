@@ -1,3 +1,4 @@
+#pragma once
 #include "native_engine.hpp"
 
 extern "C" {

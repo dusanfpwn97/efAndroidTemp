@@ -1,7 +1,7 @@
 #pragma once
 
 //#ifdef EF_PLATFORM_WINDOWS
-#include <string>
+
 extern ef::Application* ef::createApplication();
 
 int main(int argc, char** argv)
@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 	delete app;
 }
 
-//#endif
+//#else
 /*
 #include <jni.h>
 #include <string>

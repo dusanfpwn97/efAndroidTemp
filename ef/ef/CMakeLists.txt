@@ -22,7 +22,20 @@ file(GLOB_RECURSE INCLUDE_DIRS
 # put generated files into the same directory as exe
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-add_library(ef SHARED ${SOURCES})
+if(EF_PLATFORM_WINDOWS)
+	add_library(ef SHARED
+			${SOURCES}
+
+			)
+else()
+	add_library(ef SHARED
+
+			${SOURCES}
+
+			)
+endif()
+
+
 target_link_libraries(ef game)
 ##add_library(ef SHARED IMPORTED )
 #
