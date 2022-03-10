@@ -27,7 +27,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#define LOG_TAG "GameControllerSample"
+#define LOG_TAG "EfEngine"
 
 #include "Log.h"
 

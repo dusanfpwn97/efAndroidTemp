@@ -23,6 +23,7 @@ file(GLOB_RECURSE INCLUDE_DIRS
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_library(ef SHARED ${SOURCES})
+target_link_libraries(ef game)
 ##add_library(ef SHARED IMPORTED )
 #
 #
