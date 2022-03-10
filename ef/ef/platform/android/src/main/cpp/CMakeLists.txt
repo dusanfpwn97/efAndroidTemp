@@ -38,7 +38,7 @@ set(COMMON_SRC_DIR "../../common")
 set(COMMON_INCLUDE_DIR "../../common/include")
 
 # build Dear ImGui as a static lib
-set(IMGUI_BASE_DIR "../../../../third_party/imgui")
+set(IMGUI_BASE_DIR "../../../../../../third_party/imgui")
 
 add_library(imgui STATIC
         ${IMGUI_BASE_DIR}/imgui_demo.cpp

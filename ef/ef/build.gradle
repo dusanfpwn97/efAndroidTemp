@@ -42,12 +42,25 @@ android {
     externalNativeBuild {
         cmake {
             version '3.18.1'
-            path 'src/main/cpp/CMakeLists.txt'
+            path 'platform/android/src/main/cpp/CMakeLists.txt'
         }
     }
     buildFeatures {
         prefab true
     }
+
+	sourceSets {
+		main {
+
+            manifest.srcFile 'platform/android/src/main/AndroidManifest.xml'
+			java.srcDirs = ['platform/android/src']
+			resources.srcDirs = ['platform/android/src']
+			aidl.srcDirs = ['platform/android/src']
+			renderscript.srcDirs = ['platform/android/src']
+			res.srcDirs = ['platform/android/src/main/res']
+			assets.srcDirs = ['platform/android/src/main/assets']
+		}
+	}
 }
 android.lintOptions {
         abortOnError  = false
