@@ -1,6 +1,7 @@
 //#include "native_engine.hpp"
 
 #include <native_engine.hpp>
+#include "../../../../../src/application.h"
 
 
 extern "C" {

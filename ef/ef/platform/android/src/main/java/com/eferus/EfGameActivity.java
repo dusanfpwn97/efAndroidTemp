@@ -19,7 +19,7 @@ public class EfGameActivity extends GameActivity {
     static {
 
         // Load the game library:
-        System.loadLibrary("efAndroid");
+        System.loadLibrary("ef");
     }
 
     private void hideSystemUI() {
