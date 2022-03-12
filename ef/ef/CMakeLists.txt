@@ -4,6 +4,7 @@ project ("ef")
 
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/platform/android/src/main/cpp)
+
 # DEFINITIONS
 add_compile_definitions(EF_PLATFORM_WINDOWS EF_BUILD_DLL)
 set(EF_PLATFORM_WINDOWS 0)
@@ -12,6 +13,7 @@ set(EF_PLATFORM_WINDOWS 0)
 set(GLAD_DIR ${CMAKE_CURRENT_LIST_DIR}/libs/glad)
 # VARS
 file(GLOB_RECURSE SOURCES
+
 	${CMAKE_CURRENT_LIST_DIR}/src/*.cpp
 	${PROJECT_SOURCE_DIR}/src/*.c
 	${GLAD_DIR}/src/glad.c
@@ -35,8 +37,11 @@ else()
 			)
 endif()
 
-
-target_link_libraries(ef game)
+target_include_directories(${PROJECT_NAME} PUBLIC
+		${CMAKE_CURRENT_LIST_DIR}/platform/android/src/main/cpp
+		${CMAKE_CURRENT_LIST_DIR}/platform/android/src/common
+		)
+target_link_libraries(ef efAndroid)
 ##add_library(ef SHARED IMPORTED )
 #
 #
@@ -72,11 +77,6 @@ target_link_libraries(ef game)
 
 
 
-
-
-
-
-
 #if(EF_PLATFORM_WINDOWS)
 #	set(SDL_LIB_DIR ${SFML_DIR}/lib/windows)
 #else()
@@ -85,3 +85,5 @@ target_link_libraries(ef game)
 
 #set(SDL_LIB_DIR ${CMAKE_CURRENT_LIST_DIR}/src/main/jniLibs/${ANDROID_ABI})
 # GLAD
+
+

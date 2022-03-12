@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18.1)
-project(paddleboat_demo)
+project(efAndroid)
 
 find_package(png16 REQUIRED CONFIG)
 find_package(game-activity REQUIRED CONFIG)
@@ -36,7 +36,7 @@ target_include_directories(imgui PRIVATE
         ${IMGUI_BASE_DIR})
 
 # now build app's shared lib
-add_library(game SHARED
+add_library(efAndroid SHARED
         ${COMMON_SRC_DIR}/android_main.cpp
         ${COMMON_SRC_DIR}/controllerui_data.cpp
         ${COMMON_SRC_DIR}/controllerui_util.cpp
@@ -55,13 +55,13 @@ add_library(game SHARED
         ${COMMON_SRC_DIR}/efWindow.cpp
         efWindowAndroid.cpp)
 
-target_include_directories(game PRIVATE
+target_include_directories(efAndroid PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${COMMON_SRC_DIR}
         ${COMMON_INCLUDE_DIR}
         ${IMGUI_BASE_DIR})
 
-target_compile_options(game
+target_compile_options(efAndroid
         PRIVATE
         -std=c++17
         -Wall
@@ -72,7 +72,7 @@ target_compile_options(game
         "$<$<CONFIG:DEBUG>:-Werror>")
 
 # add lib dependencies
-target_link_libraries(game
+target_link_libraries(efAndroid
         android
         imgui
         game-activity::game-activity

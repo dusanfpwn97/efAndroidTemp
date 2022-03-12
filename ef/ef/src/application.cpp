@@ -52,4 +52,8 @@ namespace ef
         
 	}
 
+	void Application::externalStartCallback() {
+
+	}
+
 }

@@ -15,13 +15,11 @@ import com.google.androidgamesdk.GameActivity;
 // a workaround for loading the runtime shared library on old Android versions
 public class EfGameActivity extends GameActivity {
 
-
-
     // Load our native library:
     static {
 
         // Load the game library:
-        System.loadLibrary("game");
+        System.loadLibrary("efAndroid");
     }
 
     private void hideSystemUI() {

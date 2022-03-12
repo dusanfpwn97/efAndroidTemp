@@ -17,10 +17,14 @@ namespace ef
 		void run();
 
 		void print();
+
+		static void externalStartCallback();
 	};
 
 
 	// To be defined in client
 	Application* createApplication();
+
+
 
 }
