@@ -1,6 +1,6 @@
 #pragma once
 
-#include <efWindow.hpp>
+#include <Window.hpp>
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include "game-activity/native_app_glue/android_native_app_glue.h"
@@ -9,7 +9,7 @@
 
 namespace ef
 {
-    class AndroidWindow : public efWindow
+    class AndroidWindow : public Window
     {
     public:
         AndroidWindow();
@@ -17,11 +17,11 @@ namespace ef
 
         bool createWindow(int w, int h) override;
 
-        bool InitDisplay() override;
-        bool InitSurface() override;
-        bool InitContext() override;
+        bool InitDisplay();
+        bool InitSurface();
+        bool InitContext();
 
-        void init(android_app *app);
+        void setAndroidApp(android_app *app);
 
 
         // EGL stuff
@@ -48,6 +48,14 @@ namespace ef
 
 
         void log_opengl_error(GLenum err);
+
+        uint32_t GetWidth() const override;
+        uint32_t GetHeight() const override;
+
+        void SetVSync(bool enabled) override;
+        bool IsVSync() const override;
+
+        void OnUpdate() override;
 
     };
 }

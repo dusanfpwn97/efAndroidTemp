@@ -51,7 +51,8 @@ NativeEngine::NativeEngine(struct android_app *app) {
     ALOGI("NativeEngine: initializing.");
     mApp = app;
 
-    window = new ef::AndroidWindow();
+
+    window = std::make_unique<ef::AndroidWindow>();
 
     mHasFocus = mIsVisible = mHasWindow = false;
 
@@ -78,7 +79,18 @@ NativeEngine::NativeEngine(struct android_app *app) {
 
     Paddleboat_init(GetJniEnv(), app->activity->javaGameActivity); //clazz);
 
-    window->init(mApp);
+    //ef::AndroidWindow *tmp = dynamic_cast<ef::AndroidWindow*>(window.get());
+    //std::unique_ptr<ef::AndroidWindow> tempAndroidWindow;
+    //if(tmp != nullptr)
+    //{
+    //    window.release();
+    //    tempAndroidWindow.reset(tmp);
+    //}
+
+
+   // std::unique_ptr<ef::AndroidWindow> tempAndroidWindow = dynamic_cast<ef::AndroidWindow*>(window);
+
+    window->setAndroidApp(mApp);
 
     VLOGD("NativeEngine: querying API level.");
     ALOGI("NativeEngine: API version %d.", mApiVersion);

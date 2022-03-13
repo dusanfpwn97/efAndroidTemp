@@ -2,7 +2,7 @@
 // Created by dusan on 05-Mar-22.
 //
 
-#include "efWindowAndroid.hpp"
+#include "WindowAndroid.hpp"
 #include <android/window.h>
 #include "scene_manager.hpp"
 
@@ -142,9 +142,8 @@ namespace ef
         return true;
     }
 
-    void AndroidWindow::init(android_app *app) {
+    void AndroidWindow::setAndroidApp(android_app *app) {
         mApp = app;
-
     }
 
     bool AndroidWindow::HandleEglError(EGLint error) {
@@ -239,6 +238,26 @@ namespace ef
             //ALOGE("*** OpenGL error: error %d", err)
         }
     }
-    
+
+    void AndroidWindow::SetVSync(bool enabled) {
+
+    }
+
+    bool AndroidWindow::IsVSync() const {
+        return false;
+    }
+
+    uint32_t AndroidWindow::GetWidth() const {
+        return 0;
+    }
+
+    uint32_t AndroidWindow::GetHeight() const {
+        return 0;
+    }
+
+    void AndroidWindow::OnUpdate() {
+
+    }
+
 
 }

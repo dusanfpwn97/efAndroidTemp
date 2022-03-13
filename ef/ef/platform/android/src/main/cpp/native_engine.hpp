@@ -17,7 +17,10 @@
 #pragma once
 
 #include <common.hpp>
-#include "efWindowAndroid.hpp"
+#include "../../common/Window.hpp"
+#include "WindowAndroid.hpp"
+#include <memory>
+
 
 struct NativeEngineSavedState {
     bool mHasFocus;
@@ -49,7 +52,7 @@ public:
     int GetSystemBarOffset() { return mSystemBarOffset; }
 
 private:
-    ef::AndroidWindow* window;
+    std::unique_ptr<ef::AndroidWindow> window;
 
     // variables to track Android lifecycle:
     bool mHasFocus, mIsVisible, mHasWindow;
