@@ -1,17 +1,13 @@
 ﻿cmake_minimum_required (VERSION 3.18.1)
 project ("ef")
 
-#add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/platform/android/src/main/cpp)
-
 # DEFINITIONS
 add_compile_definitions(EF_PLATFORM_WINDOWS EF_BUILD_DLL)
 set(EF_PLATFORM_WINDOWS 0)
 
-
 find_package(png16 REQUIRED CONFIG)
 find_package(game-activity REQUIRED CONFIG)
 find_package(games-controller REQUIRED CONFIG)
-
 
 set(GLAD_DIR ${CMAKE_CURRENT_LIST_DIR}/libs/glad)
 # VARS
@@ -118,26 +114,6 @@ add_library(imgui STATIC
 
 target_include_directories(imgui PRIVATE
 		${IMGUI_BASE_DIR})
-
-# now build app's shared lib
-#add_library(ef SHARED
-#		${COMMON_SRC_DIR}/android_main.cpp
-#		${COMMON_SRC_DIR}/controllerui_data.cpp
-#		${COMMON_SRC_DIR}/controllerui_util.cpp
-#		${COMMON_SRC_DIR}/demo_scene.cpp
-#		${CPP_SRC_DIR}/game_activity_included.cpp
-#		${CPP_SRC_DIR}/game_input_included.cpp
-#		${COMMON_SRC_DIR}/imgui_manager.cpp
-#		${COMMON_SRC_DIR}/input_util.cpp
-#		${CPP_SRC_DIR}/jni_util.cpp
-#		${CPP_SRC_DIR}/native_app_glue_included.cpp
-#		${CPP_SRC_DIR}/native_engine.cpp
-#		${COMMON_SRC_DIR}/scene.cpp
-#		${COMMON_SRC_DIR}/scene_manager.cpp
-#		${COMMON_SRC_DIR}/texture_asset_loader.cpp
-#		${COMMON_SRC_DIR}/util.cpp
-#		${COMMON_SRC_DIR}/efWindow.cpp
-#		${CPP_SRC_DIR}/efWindowAndroid.cpp)
 
 target_include_directories(ef PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}

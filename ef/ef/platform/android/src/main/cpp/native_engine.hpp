@@ -85,10 +85,6 @@ private:
     // is this the first frame we're drawing?
     bool mIsFirstFrame;
 
-
-
-    bool InitGLObjects();
-
     void ConfigureOpenGL();
 
     bool PrepareToRender();
