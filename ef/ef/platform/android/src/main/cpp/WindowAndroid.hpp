@@ -15,7 +15,7 @@ namespace ef
         bool InitSurface();
         bool InitContext();
 
-        bool init();
+        virtual bool init() override;
 
 
 

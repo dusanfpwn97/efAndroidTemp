@@ -53,6 +53,8 @@ NativeEngine::NativeEngine(struct android_app *app) {
 
     window = ef::Window::create(0,0);
     window->setAndroidApp(mApp);
+    window->init();
+
 
     mHasFocus = mIsVisible = mHasWindow = false;
 
@@ -429,9 +431,12 @@ bool NativeEngine::PrepareToRender() {
     if (!window->getDoesSurfaceExist() || !window->getDoesDisplayExist() || !window->getDoesContextExist())
     {
 
-         window = ef::Window::create(0,0);
+        window = ef::Window::create(0,0);
+        window->setAndroidApp(mApp);
+        window->init();
 
-         window ? isWindowCreated = true : isWindowCreated = false;
+         if(window != nullptr) isWindowCreated = true;
+         else isWindowCreated = false;
 
         // Make sure UI data is loaded
         ControllerUIData::LoadControllerUIData();

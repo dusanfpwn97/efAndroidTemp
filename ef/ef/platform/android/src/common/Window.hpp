@@ -18,7 +18,7 @@ namespace ef
 
         //static Window* Create();
 
-        //virtual void initt() = 0;
+        virtual bool init() = 0;
         virtual void OnUpdate() = 0;
 
         virtual uint32_t GetWidth() const = 0;

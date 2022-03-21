@@ -17,9 +17,6 @@ namespace ef
 
         mHasGLObjects = false;
 
-
-        init();
-
     }
 
     AndroidWindow::~AndroidWindow() {
