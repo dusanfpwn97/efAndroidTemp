@@ -1,6 +1,10 @@
 #pragma once
 #include <stdint.h>
+#include <EGL/egl.h>
+#include <GLES3/gl3.h>
+#include "game-activity/native_app_glue/android_native_app_glue.h"
 
+#include "our_key_codes.hpp"
 
 namespace ef
 {
@@ -10,7 +14,7 @@ namespace ef
         //Window();
         virtual ~Window() = default;
 
-        virtual bool createWindow(int w, int h) = 0;
+        static Window* create(int w, int h);
 
         //static Window* Create();
 
@@ -22,6 +26,27 @@ namespace ef
 
         virtual void SetVSync(bool enabled) = 0;
         virtual bool IsVSync() const = 0;
+
+        virtual void KillGLObjects() = 0;
+        virtual void KillSurface()   = 0;
+        virtual void KillContext()   = 0;
+        virtual void KillDisplay()   = 0;
+
+        virtual bool getDoesSurfaceExist()= 0;
+        virtual bool getDoesContextExist()= 0;
+        virtual bool getDoesDisplayExist()= 0;
+
+        virtual void getSurfaceSize(int &w, int &h)= 0;
+
+        virtual bool swapBuffers()= 0;
+
+
+        // android_app structure
+        struct android_app *mApp;
+
+        virtual void setAndroidApp(android_app *app)= 0;
+
+        virtual void log_opengl_error(GLenum err)= 0;
 
 
     };

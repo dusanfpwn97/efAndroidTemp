@@ -17,6 +17,9 @@ namespace ef
 
         mHasGLObjects = false;
 
+
+        init();
+
     }
 
     AndroidWindow::~AndroidWindow() {
@@ -102,7 +105,14 @@ namespace ef
         return true;
     }
 
-    bool AndroidWindow::createWindow(int w, int h) {
+    Window* Window::create(int w, int h) {
+
+        return new AndroidWindow();
+    }
+
+
+    bool AndroidWindow::init() {
+
         if (!InitDisplay()) {
             // ALOGE("NativeEngine: failed to create display.");
             return false;
@@ -131,20 +141,16 @@ namespace ef
         //  mEglDisplay, mEglSurface, mEglContext);
 
         if (!mHasGLObjects) {
-           // ALOGI("NativeEngine: creating OpenGL objects.");
+            // ALOGI("NativeEngine: creating OpenGL objects.");
             if (!InitGLObjects()) {
-               // ALOGE("NativeEngine: unable to initialize OpenGL objects.");
+                // ALOGE("NativeEngine: unable to initialize OpenGL objects.");
                 return false;
             }
         }
 
-
         return true;
     }
 
-    void AndroidWindow::setAndroidApp(android_app *app) {
-        mApp = app;
-    }
 
     bool AndroidWindow::HandleEglError(EGLint error) {
         switch (error) {
@@ -232,12 +238,7 @@ namespace ef
         return true;
     }
 
-    void AndroidWindow::log_opengl_error(GLenum err) {
-        while((err = glGetError()) != GL_NO_ERROR)
-        {
-            //ALOGE("*** OpenGL error: error %d", err)
-        }
-    }
+
 
     void AndroidWindow::SetVSync(bool enabled) {
 
@@ -259,5 +260,50 @@ namespace ef
 
     }
 
+    bool AndroidWindow::getDoesSurfaceExist()
+    {
+        return mEglSurface != EGL_NO_SURFACE;
+    }
+
+    bool AndroidWindow::getDoesContextExist()
+    {
+        return mEglContext != EGL_NO_CONTEXT;
+    }
+
+    bool AndroidWindow::getDoesDisplayExist()
+    {
+        return mEglDisplay != EGL_NO_DISPLAY;
+    }
+
+    void AndroidWindow::getSurfaceSize(int &w, int &h) {
+        int width, height;
+        eglQuerySurface(mEglDisplay, mEglSurface, EGL_WIDTH, &width);
+        eglQuerySurface(mEglDisplay, mEglSurface, EGL_HEIGHT, &height);
+
+        w = width;
+        h = height;
+    }
+
+    bool AndroidWindow::swapBuffers() {
+        if (EGL_FALSE == eglSwapBuffers(mEglDisplay, mEglSurface)) {
+            // failed to swap buffers...
+            //ALOG("NativeEngine: eglSwapBuffers failed, EGL error %d", eglGetError());
+            HandleEglError(eglGetError());
+
+            return false;
+        }
+
+        return true;
+    }
+
+    void AndroidWindow::log_opengl_error(GLenum err) {
+        while ((err = glGetError()) != GL_NO_ERROR) {
+            //ALOGE("*** OpenGL error: error %d", err)
+        }
+    }
+
+    void AndroidWindow::setAndroidApp(android_app *app) {
+        mApp = app;
+    }
 
 }

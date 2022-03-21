@@ -22,7 +22,6 @@
 #include "controllerui_data.h"
 
 #include "paddleboat/paddleboat.h"
-
 #include <android/window.h>
 
 // verbose debug logs on?
@@ -52,7 +51,8 @@ NativeEngine::NativeEngine(struct android_app *app) {
     mApp = app;
 
 
-    window = std::make_unique<ef::AndroidWindow>();
+    window = ef::Window::create(0,0);
+    window->setAndroidApp(mApp);
 
     mHasFocus = mIsVisible = mHasWindow = false;
 
@@ -90,7 +90,6 @@ NativeEngine::NativeEngine(struct android_app *app) {
 
    // std::unique_ptr<ef::AndroidWindow> tempAndroidWindow = dynamic_cast<ef::AndroidWindow*>(window);
 
-    window->setAndroidApp(mApp);
 
     VLOGD("NativeEngine: querying API level.");
     ALOGI("NativeEngine: API version %d.", mApiVersion);
@@ -352,8 +351,8 @@ void NativeEngine::HandleCommand(int32_t cmd) {
             break;
     }
 
-    VLOGD("NativeEngine: STATUS: F%d, V%d, W%d, EGL: D %p, S %p, CTX %p, CFG %p",
-          mHasFocus, mIsVisible, mHasWindow, window->mEglDisplay, window->mEglSurface, window->mEglContext, window->mEglConfig);
+    //VLOGD("NativeEngine: STATUS: F%d, V%d, W%d, EGL: D %p, S %p, CTX %p, CFG %p",
+    //      mHasFocus, mIsVisible, mHasWindow, window->mEglDisplay, window->mEglSurface, window->mEglContext, window->mEglConfig);
 }
 
 void NativeEngine::UpdateSystemBarOffset() {
@@ -427,14 +426,12 @@ bool NativeEngine::PrepareToRender() {
 
     bool isWindowCreated;
 
-    if (window->mEglDisplay == EGL_NO_DISPLAY || window->mEglSurface == EGL_NO_SURFACE || window->mEglContext == EGL_NO_CONTEXT)
+    if (!window->getDoesSurfaceExist() || !window->getDoesDisplayExist() || !window->getDoesContextExist())
     {
 
-        isWindowCreated = window->createWindow(0,0);
+         window = ef::Window::create(0,0);
 
-        //efWindow->createWindow(0,0);
-        // create display if needed
-
+         window ? isWindowCreated = true : isWindowCreated = false;
 
         // Make sure UI data is loaded
         ControllerUIData::LoadControllerUIData();
@@ -462,8 +459,7 @@ void NativeEngine::DoFrame() {
     // how big is the surface? We query every frame because it's cheap, and some
     // strange devices out there change the surface size without calling any callbacks...
     int width, height;
-    eglQuerySurface(window->mEglDisplay, window->mEglSurface, EGL_WIDTH, &width);
-    eglQuerySurface(window->mEglDisplay, window->mEglSurface, EGL_HEIGHT, &height);
+    window->getSurfaceSize(width, height);
 
     if (width != mSurfWidth || height != mSurfHeight) {
         // notify scene manager that the surface has changed size
@@ -485,11 +481,7 @@ void NativeEngine::DoFrame() {
     mgr->DoFrame();
 
     // swap buffers
-    if (EGL_FALSE == eglSwapBuffers(window->mEglDisplay, window->mEglSurface)) {
-        // failed to swap buffers...
-        ALOGW("NativeEngine: eglSwapBuffers failed, EGL error %d", eglGetError());
-        window->HandleEglError(eglGetError());
-    }
+    window->swapBuffers();
 
     // print out GL errors, if any
     GLenum e;

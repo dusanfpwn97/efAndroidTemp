@@ -1,11 +1,7 @@
 #pragma once
 
 #include <Window.hpp>
-#include <EGL/egl.h>
-#include <GLES3/gl3.h>
-#include "game-activity/native_app_glue/android_native_app_glue.h"
 
-#include "our_key_codes.hpp"
 
 namespace ef
 {
@@ -13,15 +9,14 @@ namespace ef
     {
     public:
         AndroidWindow();
-        ~AndroidWindow() override;
-
-        bool createWindow(int w, int h) override;
+        virtual ~AndroidWindow() override;
 
         bool InitDisplay();
         bool InitSurface();
         bool InitContext();
 
-        void setAndroidApp(android_app *app);
+        bool init();
+
 
 
         // EGL stuff
@@ -31,15 +26,12 @@ namespace ef
         EGLConfig mEglConfig;
 
 
-        // android_app structure
-        struct android_app *mApp;
-
         bool HandleEglError(EGLint error);
 
-        void KillGLObjects();
-        void KillSurface();
-        void KillContext();
-        void KillDisplay();
+        virtual void KillGLObjects() override;
+        virtual void KillSurface()   override;
+        virtual void KillContext()   override;
+        virtual void KillDisplay()   override;
 
         // are our OpenGL objects (textures, etc) currently loaded?
         bool mHasGLObjects;
@@ -47,7 +39,6 @@ namespace ef
         bool InitGLObjects();
 
 
-        void log_opengl_error(GLenum err);
 
         uint32_t GetWidth() const override;
         uint32_t GetHeight() const override;
@@ -56,6 +47,19 @@ namespace ef
         bool IsVSync() const override;
 
         void OnUpdate() override;
+
+        virtual bool getDoesSurfaceExist() override;
+        virtual bool getDoesContextExist() override;
+        virtual bool getDoesDisplayExist() override;
+
+        virtual void getSurfaceSize(int &w, int &h) override;
+
+        virtual bool swapBuffers() override;
+
+        virtual void log_opengl_error(GLenum err) override;
+
+
+        virtual void setAndroidApp(android_app *app) override;
 
     };
 }

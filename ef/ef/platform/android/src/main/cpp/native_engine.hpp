@@ -18,7 +18,6 @@
 
 #include <common.hpp>
 #include "../../common/Window.hpp"
-#include "WindowAndroid.hpp"
 #include <memory>
 
 
@@ -52,7 +51,7 @@ public:
     int GetSystemBarOffset() { return mSystemBarOffset; }
 
 private:
-    std::unique_ptr<ef::AndroidWindow> window;
+    ef::Window* window;
 
     // variables to track Android lifecycle:
     bool mHasFocus, mIsVisible, mHasWindow;
