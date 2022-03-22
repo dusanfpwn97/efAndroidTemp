@@ -4,6 +4,7 @@
 #include <GLES3/gl3.h>
 #include "game-activity/native_app_glue/android_native_app_glue.h"
 
+
 #include "our_key_codes.hpp"
 
 namespace ef
@@ -39,12 +40,6 @@ namespace ef
         virtual void getSurfaceSize(int &w, int &h)= 0;
 
         virtual bool swapBuffers()= 0;
-
-
-        // android_app structure
-        struct android_app *mApp;
-
-        virtual void setAndroidApp(android_app *app)= 0;
 
         virtual void log_opengl_error(GLenum err)= 0;
 

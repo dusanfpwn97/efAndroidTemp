@@ -10,6 +10,9 @@ find_package(game-activity REQUIRED CONFIG)
 find_package(games-controller REQUIRED CONFIG)
 
 set(GLAD_DIR ${CMAKE_CURRENT_LIST_DIR}/libs/glad)
+set(GLM_DIR ${CMAKE_CURRENT_LIST_DIR}/third_party/glm/glm)
+message(STATUS "GLM_DIR dir: ${GLM_DIR}")
+add_subdirectory(${GLM_DIR})
 # VARS
 file(GLOB_RECURSE SOURCES
 		${CMAKE_CURRENT_LIST_DIR}/platform/android/src/common/*.cpp
@@ -102,7 +105,7 @@ set(CPP_SRC_DIR "platform/android/src/main/cpp")
 set(COMMON_INCLUDE_DIR "platform/android/src/common/include")
 
 # build Dear ImGui as a static lib
-set(IMGUI_BASE_DIR "../third_party/imgui")
+set(IMGUI_BASE_DIR "third_party/imgui")
 
 add_library(imgui STATIC
 		${IMGUI_BASE_DIR}/imgui_demo.cpp
@@ -121,6 +124,7 @@ target_include_directories(ef PRIVATE
 		${COMMON_INCLUDE_DIR}
 		${IMGUI_BASE_DIR}
 		${CPP_SRC_DIR}
+		${GLM_DIR}
 		)
 
 target_compile_options(ef
@@ -145,4 +149,5 @@ target_link_libraries(ef
 		GLESv2
 		jnigraphics
 		log
-		z)
+		z
+		glm)

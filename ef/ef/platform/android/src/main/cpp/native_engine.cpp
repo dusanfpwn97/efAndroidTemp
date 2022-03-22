@@ -23,6 +23,7 @@
 
 #include "paddleboat/paddleboat.h"
 #include <android/window.h>
+#include "platform/android/src/main/cpp/WindowAndroid.hpp"
 
 // verbose debug logs on?
 #define VERBOSE_LOGGING 1
@@ -50,9 +51,8 @@ NativeEngine::NativeEngine(struct android_app *app) {
     ALOGI("NativeEngine: initializing.");
     mApp = app;
 
-
     window = ef::Window::create(0,0);
-    window->setAndroidApp(mApp);
+    dynamic_cast<ef::AndroidWindow*>(window)->setAndroidApp(mApp);
     window->init();
 
 
@@ -432,7 +432,7 @@ bool NativeEngine::PrepareToRender() {
     {
 
         window = ef::Window::create(0,0);
-        window->setAndroidApp(mApp);
+        dynamic_cast<ef::AndroidWindow*>(window)->setAndroidApp(mApp);
         window->init();
 
          if(window != nullptr) isWindowCreated = true;

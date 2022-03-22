@@ -2,7 +2,6 @@
 
 #include <Window.hpp>
 
-
 namespace ef
 {
     class AndroidWindow : public Window
@@ -17,14 +16,11 @@ namespace ef
 
         virtual bool init() override;
 
-
-
         // EGL stuff
         EGLDisplay mEglDisplay;
         EGLSurface mEglSurface;
         EGLContext mEglContext;
         EGLConfig mEglConfig;
-
 
         bool HandleEglError(EGLint error);
 
@@ -37,8 +33,6 @@ namespace ef
         bool mHasGLObjects;
 
         bool InitGLObjects();
-
-
 
         uint32_t GetWidth() const override;
         uint32_t GetHeight() const override;
@@ -59,7 +53,12 @@ namespace ef
         virtual void log_opengl_error(GLenum err) override;
 
 
-        virtual void setAndroidApp(android_app *app) override;
+        void setAndroidApp(android_app *app);
+
+    private:
+
+        // android_app structure
+        struct android_app *mApp;
 
     };
 }

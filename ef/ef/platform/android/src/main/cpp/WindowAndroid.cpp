@@ -5,18 +5,17 @@
 #include "WindowAndroid.hpp"
 #include <android/window.h>
 #include "scene_manager.hpp"
+#include <glm/glm.hpp>
 
 namespace ef
 {
-
     AndroidWindow::AndroidWindow() {
         mEglDisplay = EGL_NO_DISPLAY;
         mEglSurface = EGL_NO_SURFACE;
         mEglContext = EGL_NO_CONTEXT;
-        mEglConfig = 0;
+        mEglConfig = nullptr;
 
         mHasGLObjects = false;
-
     }
 
     AndroidWindow::~AndroidWindow() {
@@ -28,6 +27,7 @@ namespace ef
             // nothing to do
             //ALOGI("NativeEngine: no need to init display (already had one).");
             return true;
+
         }
 
         //ALOGI("NativeEngine: initializing display.");
@@ -107,7 +107,6 @@ namespace ef
         return new AndroidWindow();
     }
 
-
     bool AndroidWindow::init() {
 
         if (!InitDisplay()) {
@@ -148,7 +147,6 @@ namespace ef
         return true;
     }
 
-
     bool AndroidWindow::HandleEglError(EGLint error) {
         switch (error) {
             case EGL_SUCCESS:
@@ -175,7 +173,6 @@ namespace ef
                 return false;
         }
     }
-
 
     void AndroidWindow::KillGLObjects() {
         if (mHasGLObjects) {
@@ -224,7 +221,6 @@ namespace ef
         //ALOGI("NativeEngine: display killed successfully.");
     }
 
-
     bool AndroidWindow::InitGLObjects() {
         if (!mHasGLObjects) {
             SceneManager *mgr = SceneManager::GetInstance();
@@ -234,8 +230,6 @@ namespace ef
         }
         return true;
     }
-
-
 
     void AndroidWindow::SetVSync(bool enabled) {
 
