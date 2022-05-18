@@ -4,9 +4,6 @@
 #include <GLES3/gl3.h>
 #include "game-activity/native_app_glue/android_native_app_glue.h"
 
-
-#include "our_key_codes.hpp"
-
 namespace ef
 {
     class Window

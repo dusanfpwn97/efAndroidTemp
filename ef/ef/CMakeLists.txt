@@ -107,17 +107,6 @@ set(COMMON_INCLUDE_DIR "platform/android/src/common/include")
 # build Dear ImGui as a static lib
 #set(IMGUI_BASE_DIR "third_party/imgui")
 
-#add_library(imgui STATIC
-#		${IMGUI_BASE_DIR}/imgui_demo.cpp
-#		${IMGUI_BASE_DIR}/imgui_draw.cpp
-#		${IMGUI_BASE_DIR}/imgui_tables.cpp
-#		${IMGUI_BASE_DIR}/imgui_widgets.cpp
-#		${IMGUI_BASE_DIR}/imgui.cpp
-#		${IMGUI_BASE_DIR}/backends/imgui_impl_opengl3.cpp)
-#
-#target_include_directories(imgui PRIVATE
-#		${IMGUI_BASE_DIR})
-
 target_include_directories(ef PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${COMMON_SRC_DIR}

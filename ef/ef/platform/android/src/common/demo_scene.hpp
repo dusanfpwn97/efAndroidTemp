@@ -19,7 +19,6 @@
 #include "paddleboat/paddleboat.h"
 
 #include "engine.hpp"
-#include "util.hpp"
 
 class GameAssetManager;
 

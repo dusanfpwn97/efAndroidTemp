@@ -15,10 +15,8 @@
  */
 #include "common.hpp"
 #include "demo_scene.hpp"
-#include "input_util.hpp"
 #include "scene_manager.hpp"
 #include "native_engine.hpp"
-#include "texture_asset_loader.h"
 
 #include "paddleboat/paddleboat.h"
 #include <android/window.h>
@@ -63,7 +61,7 @@ NativeEngine::NativeEngine(struct android_app *app) {
     mScreenDensity = AConfiguration_getDensity(app->config);
     mActiveAxisIds = 0;
     mJniEnv = NULL;
-    TextureAssetLoader::setAssetManager(app->activity->assetManager);
+
     memset(&mState, 0, sizeof(mState));
     mIsFirstFrame = true;
 
@@ -122,75 +120,6 @@ static void _handle_cmd_proxy(struct android_app *app, int32_t cmd) {
 
 bool NativeEngine::IsAnimating() {
     return mHasFocus && mIsVisible && mHasWindow;
-}
-
-static bool _cooked_event_callback(struct CookedEvent *event) {
-    SceneManager *mgr = SceneManager::GetInstance();
-    PointerCoords coords;
-    memset(&coords, 0, sizeof(coords));
-    coords.x = event->motionX;
-    coords.y = event->motionY;
-    coords.minX = event->motionMinX;
-    coords.maxX = event->motionMaxX;
-    coords.minY = event->motionMinY;
-    coords.maxY = event->motionMaxY;
-    coords.isScreen = event->motionIsOnScreen;
-
-    switch (event->type) {
-        case COOKED_EVENT_TYPE_POINTER_DOWN:
-            mgr->OnPointerDown(event->motionPointerId, &coords);
-            return true;
-        case COOKED_EVENT_TYPE_POINTER_UP:
-            mgr->OnPointerUp(event->motionPointerId, &coords);
-            return true;
-        case COOKED_EVENT_TYPE_POINTER_MOVE:
-            mgr->OnPointerMove(event->motionPointerId, &coords);
-            return true;
-        default:
-            return false;
-    }
-}
-
-// This is here and not in input_util.cpp due to being specific to the GameActivity version
-static bool _cook_game_activity_motion_event(GameActivityMotionEvent *motionEvent,
-                                             CookedEventCallback callback) {
-    if (motionEvent->pointerCount > 0) {
-        int action = motionEvent->action;
-        int actionMasked = action & AMOTION_EVENT_ACTION_MASK;
-        int ptrIndex = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >>
-                                                                          AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-
-        if (ptrIndex < motionEvent->pointerCount) {
-            struct CookedEvent ev;
-            memset(&ev, 0, sizeof(ev));
-
-            if (actionMasked == AMOTION_EVENT_ACTION_DOWN || actionMasked ==
-                                                             AMOTION_EVENT_ACTION_POINTER_DOWN) {
-                ev.type = COOKED_EVENT_TYPE_POINTER_DOWN;
-            } else if (actionMasked == AMOTION_EVENT_ACTION_UP || actionMasked ==
-                                                                  AMOTION_EVENT_ACTION_POINTER_UP) {
-                ev.type = COOKED_EVENT_TYPE_POINTER_UP;
-            } else {
-                ev.type = COOKED_EVENT_TYPE_POINTER_MOVE;
-            }
-
-            ev.motionPointerId = motionEvent->pointers[ptrIndex].id;
-            ev.motionIsOnScreen = motionEvent->source == AINPUT_SOURCE_TOUCHSCREEN;
-            ev.motionX = GameActivityPointerAxes_getX(&motionEvent->pointers[ptrIndex]);
-            ev.motionY = GameActivityPointerAxes_getY(&motionEvent->pointers[ptrIndex]);
-
-            if (ev.motionIsOnScreen) {
-                // use screen size as the motion range
-                ev.motionMinX = 0.0f;
-                ev.motionMaxX = SceneManager::GetInstance()->GetScreenWidth();
-                ev.motionMinY = 0.0f;
-                ev.motionMaxY = SceneManager::GetInstance()->GetScreenHeight();
-            }
-
-            return callback(&ev);
-        }
-    }
-    return false;
 }
 
 void NativeEngine::GameLoop() {
@@ -388,7 +317,7 @@ void NativeEngine::HandleGameActivityInput() {
             if (!Paddleboat_processGameActivityMotionInputEvent(motionEvent,
                                                                sizeof(GameActivityMotionEvent))) {
                 // Didn't belong to a game controller, process it ourselves if it is a touch event
-                _cook_game_activity_motion_event(motionEvent, _cooked_event_callback);
+                //_cook_game_activity_motion_event(motionEvent, _cooked_event_callback);
             }
         }
         android_app_clear_motion_events(inputBuffer);

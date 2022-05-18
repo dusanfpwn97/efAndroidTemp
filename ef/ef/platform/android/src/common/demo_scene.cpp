@@ -64,7 +64,6 @@ DemoScene::DemoScene() {
     mPointerDown = false;
     mPointerX = 0.0f;
     mPointerY = 0.0f;
-    mTransitionStart = 0.0f;
     for (int i = 0; i < PADDLEBOAT_MAX_CONTROLLERS; ++i) {
         mActiveControllers[i] = false;
     }
@@ -93,7 +92,7 @@ DemoScene::~DemoScene() {
 }
 
 void DemoScene::OnStartGraphics() {
-    mTransitionStart = Clock();
+
 }
 
 void DemoScene::OnKillGraphics() {
@@ -163,28 +162,6 @@ void DemoScene::RenderPanel(const int32_t controllerIndex) {
 
         mPreviousControllerDataTimestamp = controllerData.timestamp;
     }
-}
-
-
-void DemoScene::ConfigureButtonLayout(const uint32_t layout) {
-    bool usingShapes = false;
-    bool reverseButtons = false;
-
-    switch (layout) {
-        case PADDLEBOAT_CONTROLLER_LAYOUT_STANDARD:
-            break;
-        case PADDLEBOAT_CONTROLLER_LAYOUT_SHAPES:
-            usingShapes = true;
-            break;
-        case PADDLEBOAT_CONTROLLER_LAYOUT_REVERSE:
-            reverseButtons = true;
-            break;
-        case PADDLEBOAT_CONTROLLER_LAYOUT_ARCADE_STICK:
-            break;
-        default:
-            break;
-    }
-
 }
 
 void DemoScene::GameControllerStatusEvent(const int32_t controllerIndex,
