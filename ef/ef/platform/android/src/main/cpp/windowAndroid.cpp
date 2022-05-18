@@ -2,7 +2,7 @@
 // Created by dusan on 05-Mar-22.
 //
 
-#include "WindowAndroid.hpp"
+#include "windowAndroid.hpp"
 #include <android/window.h>
 #include "scene_manager.hpp"
 #include <glm/glm.hpp>

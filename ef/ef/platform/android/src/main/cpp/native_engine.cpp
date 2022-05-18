@@ -20,7 +20,7 @@
 
 #include "paddleboat/paddleboat.h"
 #include <android/window.h>
-#include "platform/android/src/main/cpp/WindowAndroid.hpp"
+#include "platform/android/src/main/cpp/windowAndroid.hpp"
 
 // verbose debug logs on?
 #define VERBOSE_LOGGING 1
@@ -39,7 +39,7 @@ static bool all_motion_filter(const GameActivityMotionEvent* event) {
     return true;
 }
 
-static NativeEngine *_singleton = NULL;
+static NativeEngine *_singleton = nullptr;
 
 // workaround for internal bug b/149866792
 static NativeEngineSavedState appState = {false};
@@ -51,7 +51,6 @@ NativeEngine::NativeEngine(struct android_app *app) {
     window = ef::Window::create(0,0);
     dynamic_cast<ef::AndroidWindow*>(window)->setAndroidApp(mApp);
     window->init();
-
 
     mHasFocus = mIsVisible = mHasWindow = false;
 

@@ -17,7 +17,7 @@
 #pragma once
 
 #include <common.hpp>
-#include "../../common/Window.hpp"
+#include "../../common/window.hpp"
 #include <memory>
 
 

@@ -42,7 +42,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-            //version '3.18.1'
+            version '3.23.1'
 
             path 'CMakeLists.txt'
         }
@@ -58,7 +58,7 @@ android {
 			java.srcDirs = ['platform/android/src']
 			resources.srcDirs = ['platform/android/src']
 			aidl.srcDirs = ['platform/android/src']
-			renderscript.srcDirs = ['platform/android/src']
+
 			res.srcDirs = ['platform/android/src/main/res']
 			assets.srcDirs = ['platform/android/src/main/assets']
 		}

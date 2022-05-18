@@ -104,9 +104,6 @@ set(CPP_SRC_DIR "platform/android/src/main/cpp")
 # common include directory for all samples
 set(COMMON_INCLUDE_DIR "platform/android/src/common/include")
 
-# build Dear ImGui as a static lib
-#set(IMGUI_BASE_DIR "third_party/imgui")
-
 target_include_directories(ef PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${COMMON_SRC_DIR}

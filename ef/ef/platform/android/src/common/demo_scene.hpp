@@ -111,47 +111,7 @@ protected:
     // must be implemented by subclass
     virtual void RenderBackground();
 
-    // Pass current input status to ImGui
-    void UpdateUIInput();
-
-    // UI rendering functions
-    void RenderUI();
-
-    void SetupUIWindow();
-
-    bool RenderPreferences();
-
-    void RenderMouseData();
-
-    void RenderControllerTabs();
-
     void RenderPanel(const int32_t controllerIndex);
-
-    void RenderPanel_ControlsTab(const int32_t controllerIndex,
-                                 const Paddleboat_Controller_Data &controllerData,
-                                 const Paddleboat_Controller_Info &controllerInfo);
-
-    void RenderPanel_ControlsTab_ArcadeStick(const int32_t controllerIndex,
-                                             const Paddleboat_Controller_Data &controllerData,
-                                             const Paddleboat_Controller_Info &controllerInfo);
-
-    void RenderPanel_InfoTab(const int32_t controllerIndex,
-                             const Paddleboat_Controller_Data &controllerData,
-                             const Paddleboat_Controller_Info &controllerInfo);
-
-    void RenderPanel_VibrationTab(const int32_t controllerIndex,
-                                  const Paddleboat_Controller_Data &controllerData,
-                                  const Paddleboat_Controller_Info &controllerInfo);
-
-    void RenderPanel_MotionTab(const int32_t controllerIndex,
-                               const Paddleboat_Controller_Data &controllerData,
-                               const Paddleboat_Controller_Info &controllerInfo);
-
-    void RenderPanel_LightsTab(const int32_t controllerIndex,
-                               const Paddleboat_Controller_Data &controllerData,
-                               const Paddleboat_Controller_Info &controllerInfo);
-
-    void ConfigureButtonLayout(const uint32_t layout);
 
 public:
     DemoScene();

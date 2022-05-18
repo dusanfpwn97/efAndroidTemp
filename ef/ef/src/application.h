@@ -25,6 +25,5 @@ namespace ef
 	// To be defined in client
 	Application* createApplication();
 
-
-
+    // StartApp(struct android_app *app);
 }
