@@ -1,3 +1,0 @@
-ndk-build -C E:\_Projects\Mag\libs\ef\ef\libs\SDL\android-project\app\jni
-
-https://blog.csdn.net/weixin_39929602/article/details/117497055

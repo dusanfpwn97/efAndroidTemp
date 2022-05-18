@@ -27,7 +27,7 @@ class GameAssetManager;
 class DemoScene : public Scene {
 private:
     // We want to register a touch down as the equivalent of
-    // a button click to ImGui, so we send it an up event
+
     // without waiting for the touch to end
     enum SimulatedClickState {
         SIMULATED_CLICK_NONE = 0,

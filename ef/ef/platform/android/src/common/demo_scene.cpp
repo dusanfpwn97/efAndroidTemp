@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#include "controllerui_data.h"
-#include "controllerui_util.h"
+
 #include "demo_scene.hpp"
 #include "native_engine.hpp"
 
@@ -186,53 +185,6 @@ void DemoScene::ConfigureButtonLayout(const uint32_t layout) {
             break;
     }
 
-    if (usingShapes) {
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_A).enabled = false;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_B).enabled = false;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_X).enabled = false;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_Y).enabled = false;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_CROSS).enabled = true;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_CIRCLE).enabled = true;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_SQUARE).enabled = true;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_TRIANGLE).enabled = true;
-    } else {
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_A).enabled = true;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_B).enabled = true;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_X).enabled = true;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_Y).enabled = true;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_CROSS).enabled = false;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_CIRCLE).enabled = false;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_SQUARE).enabled = false;
-        ControllerUIData::getControllerButtonInfo(UIBUTTON_TRIANGLE).enabled = false;
-    }
-
-    if (reverseButtons) {
-        ControllerUIData::getControllerButtonInfo(
-                UIBUTTON_A).basePosition = ControllerUIData::getButtonQuadPosition(
-                UIBUTTON_DPAD_RIGHT);
-        ControllerUIData::getControllerButtonInfo(
-                UIBUTTON_B).basePosition = ControllerUIData::getButtonQuadPosition(
-                UIBUTTON_DPAD_DOWN);
-        ControllerUIData::getControllerButtonInfo(
-                UIBUTTON_X).basePosition = ControllerUIData::getButtonQuadPosition(
-                UIBUTTON_DPAD_UP);
-        ControllerUIData::getControllerButtonInfo(
-                UIBUTTON_Y).basePosition = ControllerUIData::getButtonQuadPosition(
-                UIBUTTON_DPAD_LEFT);
-    } else {
-        ControllerUIData::getControllerButtonInfo(
-                UIBUTTON_A).basePosition = ControllerUIData::getButtonQuadPosition(
-                UIBUTTON_DPAD_DOWN);
-        ControllerUIData::getControllerButtonInfo(
-                UIBUTTON_B).basePosition = ControllerUIData::getButtonQuadPosition(
-                UIBUTTON_DPAD_RIGHT);
-        ControllerUIData::getControllerButtonInfo(
-                UIBUTTON_X).basePosition = ControllerUIData::getButtonQuadPosition(
-                UIBUTTON_DPAD_LEFT);
-        ControllerUIData::getControllerButtonInfo(
-                UIBUTTON_Y).basePosition = ControllerUIData::getButtonQuadPosition(
-                UIBUTTON_DPAD_UP);
-    }
 }
 
 void DemoScene::GameControllerStatusEvent(const int32_t controllerIndex,

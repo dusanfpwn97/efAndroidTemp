@@ -18,8 +18,7 @@
 #include "input_util.hpp"
 #include "scene_manager.hpp"
 #include "native_engine.hpp"
-
-#include "controllerui_data.h"
+#include "texture_asset_loader.h"
 
 #include "paddleboat/paddleboat.h"
 #include <android/window.h>
@@ -106,7 +105,6 @@ NativeEngine *NativeEngine::GetInstance() {
 NativeEngine::~NativeEngine() {
     VLOGD("NativeEngine: destructor running");
     Paddleboat_destroy(mJniEnv);
-    ControllerUIData::UnloadControllerUIData();
 
     if (mJniEnv) {
         ALOGI("Detaching current thread from JNI.");
@@ -437,9 +435,6 @@ bool NativeEngine::PrepareToRender() {
 
          if(window != nullptr) isWindowCreated = true;
          else isWindowCreated = false;
-
-        // Make sure UI data is loaded
-        ControllerUIData::LoadControllerUIData();
 
         // configure our global OpenGL settings
         ConfigureOpenGL();
