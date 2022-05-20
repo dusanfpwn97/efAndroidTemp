@@ -4,7 +4,7 @@
 
 #include "windowAndroid.hpp"
 #include <android/window.h>
-#include "scene_manager.hpp"
+#include "src/engine/scene_manager.hpp"
 #include <glm/glm.hpp>
 
 namespace ef

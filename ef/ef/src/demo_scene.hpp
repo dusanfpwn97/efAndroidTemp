@@ -18,7 +18,7 @@
 
 #include "paddleboat/paddleboat.h"
 
-#include "engine.hpp"
+#include "src/engine/engine.hpp"
 
 class GameAssetManager;
 

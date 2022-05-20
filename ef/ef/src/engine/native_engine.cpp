@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 #include "common.hpp"
-#include "demo_scene.hpp"
+#include "src/demo_scene.hpp"
 #include "scene_manager.hpp"
 #include "native_engine.hpp"
 
 #include "paddleboat/paddleboat.h"
 #include <android/window.h>
-#include "platform/android/src/main/cpp/windowAndroid.hpp"
+#include "src/engine/platform/android/windowAndroid.hpp"
 
 // verbose debug logs on?
 #define VERBOSE_LOGGING 1

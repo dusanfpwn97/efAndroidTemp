@@ -16,9 +16,8 @@
 
 
 #include "demo_scene.hpp"
-#include "native_engine.hpp"
+#include "src/engine/native_engine.hpp"
 
-#include "Log.h"
 
 #include <functional>
 

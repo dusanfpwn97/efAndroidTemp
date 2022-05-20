@@ -23,7 +23,7 @@
 
 
 #include <jni.h>
-#include "Log.h"
+#include "../../Log.h"
 
 
 // This data comes from a binary resource linked to the library.

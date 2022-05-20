@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "common.hpp"
-#include "scene.hpp"
+#include "src/engine/common.hpp"
+#include "src/engine/scene.hpp"
 #include "scene_manager.hpp"
 
 static SceneManager _sceneManager;

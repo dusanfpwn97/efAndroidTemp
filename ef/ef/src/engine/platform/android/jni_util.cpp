@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "common.hpp"
-#include "jni_util.hpp"
-#include "native_engine.hpp"
+#include "src/engine/common.hpp"
+#include "src/engine/platform/android/jni_util.hpp"
+#include "src/engine/native_engine.hpp"
 
 static struct JniSetup _jni_setup = {0};
 

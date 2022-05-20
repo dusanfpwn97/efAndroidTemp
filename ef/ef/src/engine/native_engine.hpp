@@ -16,8 +16,8 @@
 
 #pragma once
 
-#include <common.hpp>
-#include "../../common/window.hpp"
+#include <src/engine/common.hpp>
+#include "src/engine/platform/android/window.hpp"
 #include <memory>
 
 

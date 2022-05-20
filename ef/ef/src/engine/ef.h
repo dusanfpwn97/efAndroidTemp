@@ -2,9 +2,5 @@
 
 // For uyse by applications
 
-#include "application.h"
-#include "log.h"
-
-
-
+#include "../application.h"
 #include "entry_point.h"
