@@ -1,7 +1,7 @@
 #pragma once
 
 #include "src/engine/core.h"
-
+#include <src/engine/native_engine.hpp>
 
 namespace ef
 {
@@ -14,16 +14,18 @@ namespace ef
 		Application();
 		virtual ~Application();
 
-		void run();
+		void run(struct android_app *app);
 
 		void print();
 
 		static void externalStartCallback();
+
+
 	};
 
+	Application* createApplication();
 
 	// To be defined in client
-	Application* createApplication();
 
     // StartApp(struct android_app *app);
 }

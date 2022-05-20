@@ -15,14 +15,8 @@ message(STATUS "GLM_DIR dir: ${GLM_DIR}")
 add_subdirectory(${GLM_DIR})
 # VARS
 file(GLOB_RECURSE SOURCES
-		${CMAKE_CURRENT_LIST_DIR}/platform/android/src/common/*.cpp
-		${CMAKE_CURRENT_LIST_DIR}/platform/android/src/common/*.c
-		${CMAKE_CURRENT_LIST_DIR}/platform/android/src/main/cpp/*.cpp
-		${CMAKE_CURRENT_LIST_DIR}/platform/android/src/main/cpp/*.c
 		${CMAKE_CURRENT_LIST_DIR}/src/*.cpp
 		${CMAKE_CURRENT_LIST_DIR}/src/*.c
-		${CMAKE_CURRENT_LIST_DIR}/src/engine/*.cpp
-		${CMAKE_CURRENT_LIST_DIR}/src/engine/*.c
 		${PROJECT_SOURCE_DIR}/src/*.c
 	#${GLAD_DIR}/src/glad.c
 )

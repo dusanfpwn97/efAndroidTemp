@@ -117,24 +117,6 @@ SceneManager *SceneManager::GetInstance() {
     return &_sceneManager;
 }
 
-void SceneManager::OnPointerDown(int pointerId, const struct PointerCoords *coords) {
-    if (mHasGraphics && mCurScene) {
-        mCurScene->OnPointerDown(pointerId, coords);
-    }
-}
-
-void SceneManager::OnPointerUp(int pointerId, const struct PointerCoords *coords) {
-    if (mHasGraphics && mCurScene) {
-        mCurScene->OnPointerUp(pointerId, coords);
-    }
-}
-
-void SceneManager::OnPointerMove(int pointerId, const struct PointerCoords *coords) {
-    if (mHasGraphics && mCurScene) {
-        mCurScene->OnPointerMove(pointerId, coords);
-    }
-}
-
 void SceneManager::OnPause() {
     if (mHasGraphics && mCurScene) {
         mCurScene->OnPause();

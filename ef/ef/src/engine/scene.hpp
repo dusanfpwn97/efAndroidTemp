@@ -41,15 +41,6 @@ public:
     // Called when this scene is about to be uninstalled as the active scene.
     virtual void OnUninstall();
 
-    // Called when a pointer goes down (e.g. touch, touchpad, etc)
-    virtual void OnPointerDown(int pointerId, const struct PointerCoords *coords);
-
-    // Called when a pointer goes up (e.g. touch, touchpad, etc)
-    virtual void OnPointerUp(int pointerId, const struct PointerCoords *coords);
-
-    // Called when a pointer moves (e.g. touch, touchpad, etc)
-    virtual void OnPointerMove(int pointerId, const struct PointerCoords *coords);
-
     // Called when screen gets resized
     virtual void OnScreenResized(int width, int height);
 
